@@ -15,6 +15,7 @@
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
+        <div id="funny-status" style="color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-top: 20px; text-align: center; font-size: 14px; min-height: 20px;">Причесываем пиксели...</div>
       </div>
       <div id="unity-warning"> </div>
       <div id="unity-footer">
@@ -109,6 +110,23 @@
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
+
+      const statuses = [
+        "Майним крипту для разработчика...",
+        "Полируем пиксели...",
+        "Кормим серверных хомяков...",
+        "Уговариваем Unity не вылетать...",
+        "Загружаем хорошее настроение...",
+        "Генерируем случайные ошибки...",
+        "Ищем смысл жизни в коде..."
+      ];
+      const statusElement = document.querySelector("#funny-status");
+      if (statusElement) {
+        setInterval(() => {
+          const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+          statusElement.innerText = randomStatus;
+        }, 1500);
+      }
 
       var script = document.createElement("script");
       script.src = loaderUrl;
