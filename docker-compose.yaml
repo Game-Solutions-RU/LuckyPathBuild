@@ -3,15 +3,26 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: lucky-path-app
     restart: always
+    ports:
+      - "8080:80"
     networks:
       - coolify
     labels:
       - "coolify.managed=true"
       - "traefik.enable=true"
-      - "traefik.http.routers.lucky-path.rule=Host(`${SERVICE_FQDN_LUCKY_PATH}`) && PathPrefix(`/`)"
-      - "traefik.http.routers.lucky-path.entryPoints=http"
+      - "traefik.http.routers.lucky-path-http.entryPoints=http"
+      - "traefik.http.routers.lucky-path-http.rule=Host(`${SERVICE_FQDN_LUCKY_PATH:-lucky-path.ru}`) && PathPrefix(`/`)"
+      - "traefik.http.routers.lucky-path-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.lucky-path-https.entryPoints=https"
+      - "traefik.http.routers.lucky-path-https.rule=Host(`${SERVICE_FQDN_LUCKY_PATH:-lucky-path.ru}`) && PathPrefix(`/`)"
+      - "traefik.http.routers.lucky-path-https.tls=true"
+      - "traefik.http.routers.lucky-path-https.tls.certresolver=letsencrypt"
       - "traefik.http.services.lucky-path.loadbalancer.server.port=80"
+      - "traefik.http.middlewares.gzip.compress=true"
+      - "traefik.http.routers.lucky-path-https.middlewares=gzip"
 
 networks:
   coolify:
