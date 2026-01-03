@@ -3,14 +3,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: lucky-path-web
     restart: always
+    expose:
+      - 80
     networks:
       - coolify
     labels:
       - "coolify.managed=true"
+      - "traefik.enable=true"
+      - "traefik.http.routers.lucky-path.rule=Host(`${SERVICE_FQDN_LUCKY_PATH}`) && PathPrefix(`/`)"
+      - "traefik.http.routers.lucky-path.entryPoints=http"
+      - "traefik.http.services.lucky-path.loadbalancer.server.port=80"
 
 networks:
   coolify:
     external: true
-
